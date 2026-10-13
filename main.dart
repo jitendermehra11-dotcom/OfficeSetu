@@ -1,4 +1,4 @@
-// OfficeSetu - Master Single File Structure (Base + Room 01 + Room 02 + Add Employee Feature)
+// OfficeSetu - Master Single File Structure (Base + Room 01 + Room 02 + Room 03)
 import 'package:flutter/material.dart';
 
 void main() {
@@ -76,7 +76,7 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Room 02 Navigation Button
             ElevatedButton.icon(
@@ -95,7 +95,26 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
+
+            // Room 03 Navigation Button (Expense Tracker)
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ExpenseTrackerScreen()),
+                );
+              },
+              icon: const Icon(Icons.receipt_long, size: 24),
+              label: const Text('Room 03: Expense & Bill Tracker (खर्च एवं बिल)', style: TextStyle(fontSize: 16)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal[800],
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            const SizedBox(height: 12),
 
             // Voice Command Button
             ElevatedButton.icon(
@@ -113,7 +132,7 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Camera Scan Button
             ElevatedButton.icon(
@@ -395,6 +414,161 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
                       trailing: Chip(
                         label: Text(emp["status"], style: const TextStyle(fontSize: 12, color: Colors.white)),
                         backgroundColor: emp["status"] == "Active" ? Colors.green : Colors.amber[800],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Room 03: Expense & Bill Tracker Screen
+class ExpenseTrackerScreen extends StatefulWidget {
+  const ExpenseTrackerScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ExpenseTrackerScreen> createState() => _ExpenseTrackerScreenState();
+}
+
+class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
+  final List<Map<String, dynamic>> expenseList = [
+    {"title": "ऑफिस बिजली बिल", "amount": "₹2,400", "date": "12 Oct 2026", "status": "Paid"},
+    {"title": "इंटरनेट वाई-फाई रिचार्ज", "amount": "₹999", "date": "10 Oct 2026", "status": "Paid"},
+    {"title": "स्टेशनरी और प्रिंटिंग पेपर", "amount": "₹1,500", "date": "08 Oct 2026", "status": "Pending"},
+  ];
+
+  void _addExpenseDialog() {
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController amountController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('नया खर्च जोड़ें (Add Expense)'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'खर्च का विवरण (Title)'),
+              ),
+              TextField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'राशि (Amount e.g., 500)'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('रद्द करें'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (titleController.text.isNotEmpty && amountController.text.isNotEmpty) {
+                  setState(() {
+                    expenseList.insert(0, {
+                      "title": titleController.text,
+                      "amount": "₹${amountController.text}",
+                      "date": "आज",
+                      "status": "Pending"
+                    });
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('सेव करें'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Room 03: Expense & Bill Tracker'),
+        backgroundColor: Colors.teal[900],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.between,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'कुल खर्च: ${expenseList.length} मद',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'बिलों और भुगतानों पर नजर रखें',
+                          style: TextStyle(fontSize: 13, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: _addExpenseDialog,
+                      icon: const Icon(Icons.add, size: 18),
+                      label: const Text('खर्च जोड़ें'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal[700],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'हालिया खर्च और बिल सूची:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: expenseList.length,
+                itemBuilder: (context, index) {
+                  final exp = expenseList[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.teal[100],
+                        child: const Icon(Icons.receipt_long, color: Colors.teal),
+                      ),
+                      title: Text(exp["title"], style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text('तारीख: ${exp["date"]}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(exp["amount"], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                          const SizedBox(width: 8),
+                          Chip(
+                            label: Text(exp["status"], style: const TextStyle(fontSize: 11, color: Colors.white)),
+                            backgroundColor: exp["status"] == "Paid" ? Colors.green : Colors.deepOrange,
+                          ),
+                        ],
                       ),
                     ),
                   );
