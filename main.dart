@@ -1,4 +1,4 @@
-// OfficeSetu - Final Master Code (Base + Room 01 + Room 02 + Room 03 + Room 04)
+// OfficeSetu - Final Master Code (Base + Room 01 to Room 05)
 import 'package:flutter/material.dart';
 
 void main() {
@@ -57,7 +57,7 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
             // Room 01 Navigation Button
             ElevatedButton.icon(
@@ -67,16 +67,16 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   MaterialPageRoute(builder: (context) => const AttendanceMatchingScreen()),
                 );
               },
-              icon: const Icon(Icons.calendar_today, size: 22),
-              label: const Text('Room 01: Attendance Matching (अटेंडेंस मिलान)', style: TextStyle(fontSize: 15)),
+              icon: const Icon(Icons.calendar_today, size: 20),
+              label: const Text('Room 01: Attendance Matching', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.indigo[800],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
 
             // Room 02 Navigation Button
             ElevatedButton.icon(
@@ -86,16 +86,16 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   MaterialPageRoute(builder: (context) => const HRHelperScreen()),
                 );
               },
-              icon: const Icon(Icons.people, size: 22),
-              label: const Text('Room 02: HR Helper (कर्मचारी एवं वेतन प्रबंधन)', style: TextStyle(fontSize: 15)),
+              icon: const Icon(Icons.people, size: 20),
+              label: const Text('Room 02: HR Helper (कर्मचारी प्रबंधन)', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueGrey[800],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
 
             // Room 03 Navigation Button
             ElevatedButton.icon(
@@ -105,18 +105,18 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   MaterialPageRoute(builder: (context) => const ExpenseTrackerScreen()),
                 );
               },
-              icon: const Icon(Icons.receipt_long, size: 22),
-              label: const Text('Room 03: Expense Tracker (खर्च एवं बिल)', style: TextStyle(fontSize: 15)),
+              icon: const Icon(Icons.receipt_long, size: 20),
+              label: const Text('Room 03: Expense Tracker (खर्च एवं बिल)', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal[800],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
 
-            // Room 04 Navigation Button (NEW)
+            // Room 04 Navigation Button
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -124,18 +124,36 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   MaterialPageRoute(builder: (context) => const TaskHubScreen()),
                 );
               },
-              icon: const Icon(Icons.assignment, size: 22),
-              label: const Text('Room 04: Task Hub (टास्क एवं असाइनमेंट)', style: TextStyle(fontSize: 15)),
+              icon: const Icon(Icons.assignment, size: 20),
+              label: const Text('Room 04: Task Hub (टास्क एवं असाइनमेंट)', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple[800],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
+
+            // Room 05 Navigation Button (NEW)
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const InvoiceGeneratorScreen()),
+                );
+              },
+              icon: const Icon(Icons.description, size: 20),
+              label: const Text('Room 05: Invoice & Doc Generator (इनवॉइस)', style: TextStyle(fontSize: 14)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange[800],
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            const SizedBox(height: 8),
             const Divider(),
-            const SizedBox(height: 5),
 
             // Voice Command Button
             ElevatedButton.icon(
@@ -144,16 +162,16 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   _statusMessage = "🎙️ सुन रहा हूँ... बोलिए क्या काम करना है?";
                 });
               },
-              icon: const Icon(Icons.mic, size: 22),
-              label: const Text('बोलकर काम कराओ (Voice Command)', style: TextStyle(fontSize: 15)),
+              icon: const Icon(Icons.mic, size: 20),
+              label: const Text('बोलकर काम कराओ (Voice Command)', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal[700],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
 
             // Camera Scan Button
             ElevatedButton.icon(
@@ -162,12 +180,12 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   _statusMessage = "📷 कैमरा चालू है... रजिस्टर या डॉक्यूमेंट की फोटो खींचें।";
                 });
               },
-              icon: const Icon(Icons.camera_alt, size: 22),
-              label: const Text('फोटो खींचें & ऑटो-क्लीन (Scan & Clean)', style: TextStyle(fontSize: 15)),
+              icon: const Icon(Icons.camera_alt, size: 20),
+              label: const Text('फोटो खींचें & ऑटो-क्लीन (Scan & Clean)', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepOrange[700],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
@@ -739,6 +757,154 @@ class _TaskHubScreenState extends State<TaskHubScreen> {
                         backgroundColor: t["status"] == "Completed" 
                             ? Colors.green 
                             : (t["status"] == "In Progress" ? Colors.blue : Colors.orange),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Room 05: Document & Invoice Generator Screen
+class InvoiceGeneratorScreen extends StatefulWidget {
+  const InvoiceGeneratorScreen({Key? key}) : super(key: key);
+
+  @override
+  State<InvoiceGeneratorScreen> createState() => _InvoiceGeneratorScreenState();
+}
+
+class _InvoiceGeneratorScreenState extends State<InvoiceGeneratorScreen> {
+  final List<Map<String, dynamic>> invoiceList = [
+    {"invoiceNo": "INV-101", "client": "श्री बालाजी ट्रेडर्स", "amount": "₹12,500", "date": "11 Oct 2026", "status": "Generated"},
+    {"invoiceNo": "INV-102", "client": "ओम साईं एजेंसी", "amount": "₹8,400", "date": "09 Oct 2026", "status": "Sent"},
+  ];
+
+  void _createInvoiceDialog() {
+    final TextEditingController clientController = TextEditingController();
+    final TextEditingController amountController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('नया इनवॉइस बनाएं (Create Invoice)'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: clientController,
+                decoration: const InputDecoration(labelText: 'क्लाइंट / पार्टी का नाम (Client Name)'),
+              ),
+              TextField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'कुल राशि (Amount e.g., 5000)'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('रद्द करें'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (clientController.text.isNotEmpty && amountController.text.isNotEmpty) {
+                  setState(() {
+                    invoiceList.insert(0, {
+                      "invoiceNo": "INV-10${invoiceList.length + 1}",
+                      "client": clientController.text,
+                      "amount": "₹${amountController.text}",
+                      "date": "आज",
+                      "status": "Generated"
+                    });
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('बनाएं & सेव करें'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Room 05: Document & Invoice Generator'),
+        backgroundColor: Colors.deepOrange[900],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.between,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'कुल इनवॉइस: ${invoiceList.length}',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'बिल और दस्तावेज तैयार करें',
+                          style: TextStyle(fontSize: 13, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: _createInvoiceDialog,
+                      icon: const Icon(Icons.note_add, size: 18),
+                      label: const Text('इनवॉइस बनाएं'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepOrange[700],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'हालिया इनवॉइस सूची:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: invoiceList.length,
+                itemBuilder: (context, index) {
+                  final inv = invoiceList[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.deepOrange[100],
+                        child: const Icon(Icons.description, color: Colors.deepOrange),
+                      ),
+                      title: Text('${inv["client"]} (${inv["invoiceNo"]})', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text('तारीख: ${inv["date']} | राशि: ${inv["amount"]}'),
+                      trailing: Chip(
+                        label: Text(inv["status"], style: const TextStyle(fontSize: 11, color: Colors.white)),
+                        backgroundColor: Colors.green,
                       ),
                     ),
                   );
