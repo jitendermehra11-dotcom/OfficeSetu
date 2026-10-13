@@ -1,4 +1,4 @@
-// OfficeSetu - Master Single File Structure (Base + Room 01 + Room 02 + Room 03)
+// OfficeSetu - Final Master Code (Base + Room 01 + Room 02 + Room 03 + Room 04)
 import 'package:flutter/material.dart';
 
 void main() {
@@ -57,7 +57,7 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // Room 01 Navigation Button
             ElevatedButton.icon(
@@ -67,16 +67,16 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   MaterialPageRoute(builder: (context) => const AttendanceMatchingScreen()),
                 );
               },
-              icon: const Icon(Icons.calendar_today, size: 24),
-              label: const Text('Room 01: Attendance Matching (अटेंडेंस मिलान)', style: TextStyle(fontSize: 16)),
+              icon: const Icon(Icons.calendar_today, size: 22),
+              label: const Text('Room 01: Attendance Matching (अटेंडेंस मिलान)', style: TextStyle(fontSize: 15)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.indigo[800],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
 
             // Room 02 Navigation Button
             ElevatedButton.icon(
@@ -86,18 +86,18 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   MaterialPageRoute(builder: (context) => const HRHelperScreen()),
                 );
               },
-              icon: const Icon(Icons.people, size: 24),
-              label: const Text('Room 02: HR Helper (कर्मचारी एवं वेतन प्रबंधन)', style: TextStyle(fontSize: 16)),
+              icon: const Icon(Icons.people, size: 22),
+              label: const Text('Room 02: HR Helper (कर्मचारी एवं वेतन प्रबंधन)', style: TextStyle(fontSize: 15)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueGrey[800],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
 
-            // Room 03 Navigation Button (Expense Tracker)
+            // Room 03 Navigation Button
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -105,16 +105,37 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   MaterialPageRoute(builder: (context) => const ExpenseTrackerScreen()),
                 );
               },
-              icon: const Icon(Icons.receipt_long, size: 24),
-              label: const Text('Room 03: Expense & Bill Tracker (खर्च एवं बिल)', style: TextStyle(fontSize: 16)),
+              icon: const Icon(Icons.receipt_long, size: 22),
+              label: const Text('Room 03: Expense Tracker (खर्च एवं बिल)', style: TextStyle(fontSize: 15)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal[800],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
+
+            // Room 04 Navigation Button (NEW)
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TaskHubScreen()),
+                );
+              },
+              icon: const Icon(Icons.assignment, size: 22),
+              label: const Text('Room 04: Task Hub (टास्क एवं असाइनमेंट)', style: TextStyle(fontSize: 15)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple[800],
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 5),
 
             // Voice Command Button
             ElevatedButton.icon(
@@ -123,16 +144,16 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   _statusMessage = "🎙️ सुन रहा हूँ... बोलिए क्या काम करना है?";
                 });
               },
-              icon: const Icon(Icons.mic, size: 24),
-              label: const Text('बोलकर काम कराओ (Voice Command)', style: TextStyle(fontSize: 16)),
+              icon: const Icon(Icons.mic, size: 22),
+              label: const Text('बोलकर काम कराओ (Voice Command)', style: TextStyle(fontSize: 15)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal[700],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
 
             // Camera Scan Button
             ElevatedButton.icon(
@@ -141,12 +162,12 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
                   _statusMessage = "📷 कैमरा चालू है... रजिस्टर या डॉक्यूमेंट की फोटो खींचें।";
                 });
               },
-              icon: const Icon(Icons.camera_alt, size: 24),
-              label: const Text('फोटो खींचें & ऑटो-क्लीन (Scan & Clean)', style: TextStyle(fontSize: 16)),
+              icon: const Icon(Icons.camera_alt, size: 22),
+              label: const Text('फोटो खींचें & ऑटो-क्लीन (Scan & Clean)', style: TextStyle(fontSize: 15)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepOrange[700],
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
@@ -569,6 +590,155 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                             backgroundColor: exp["status"] == "Paid" ? Colors.green : Colors.deepOrange,
                           ),
                         ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Room 04: Task & Assignment Hub Screen
+class TaskHubScreen extends StatefulWidget {
+  const TaskHubScreen({Key? key}) : super(key: key);
+
+  @override
+  State<TaskHubScreen> createState() => _TaskHubScreenState();
+}
+
+class _TaskHubScreenState extends State<TaskHubScreen> {
+  final List<Map<String, dynamic>> taskList = [
+    {"task": "स्टॉक रजिस्टर का मिलान करना", "assignedTo": "राजेश कुमार", "dueDate": "14 Oct 2026", "status": "In Progress"},
+    {"task": "नया वेंडर बिल वेरीफाई करना", "assignedTo": "अमित शर्मा", "dueDate": "13 Oct 2026", "status": "Completed"},
+    {"task": "दफ्तर की साफ-सफाई की देखरेख", "assignedTo": "सुनील वर्मा", "dueDate": "15 Oct 2026", "status": "Pending"},
+  ];
+
+  void _addTaskDialog() {
+    final TextEditingController taskController = TextEditingController();
+    final TextEditingController assigneeController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('नया टास्क जोड़ें (Add Task)'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: taskController,
+                decoration: const InputDecoration(labelText: 'टास्क का विवरण (Task Title)'),
+              ),
+              TextField(
+                controller: assigneeController,
+                decoration: const InputDecoration(labelText: 'किसे सौंपा गया (Assigned To)'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('रद्द करें'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (taskController.text.isNotEmpty && assigneeController.text.isNotEmpty) {
+                  setState(() {
+                    taskList.insert(0, {
+                      "task": taskController.text,
+                      "assignedTo": assigneeController.text,
+                      "dueDate": "आज",
+                      "status": "Pending"
+                    });
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('सेव करें'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Room 04: Task & Assignment Hub'),
+        backgroundColor: Colors.deepPurple[900],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.between,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'कुल टास्क: ${taskList.length} सक्रिय',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'कामों का आवंटन और ट्रैक करें',
+                          style: TextStyle(fontSize: 13, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: _addTaskDialog,
+                      icon: const Icon(Icons.add_task, size: 18),
+                      label: const Text('टास्क जोड़ें'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple[700],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'टास्क और जिम्मेदारी सूची:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: taskList.length,
+                itemBuilder: (context, index) {
+                  final t = taskList[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.deepPurple[100],
+                        child: const Icon(Icons.task_alt, color: Colors.deepPurple),
+                      ),
+                      title: Text(t["task"], style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text('जिम्मा: ${t["assignedTo"]} | डेडलाइन: ${t["dueDate"]}'),
+                      trailing: Chip(
+                        label: Text(t["status"], style: const TextStyle(fontSize: 11, color: Colors.white)),
+                        backgroundColor: t["status"] == "Completed" 
+                            ? Colors.green 
+                            : (t["status"] == "In Progress" ? Colors.blue : Colors.orange),
                       ),
                     ),
                   );
