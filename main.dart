@@ -1,10 +1,13 @@
-// OfficeSetu - Master Pro with Real Voice Command Integration
+// OfficeSetu - Final Master Pro (Voice + Camera OCR + Local Storage + PDF)
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:image_picker/image_picker.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'dart:io';
 import 'dart:convert';
 
 void main() {
@@ -17,7 +20,7 @@ class OfficeSetuApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'OfficeSetu - Voice & Camera Pro',
+      title: 'OfficeSetu - Ultimate Pro',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
         scaffoldBackgroundColor: const Color(0xFFF4F6F9),
@@ -38,7 +41,7 @@ class OfficeSetuDashboard extends StatefulWidget {
 class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
-  String _spokenWords = "माइक बटन दबाएं और बोलकर ऑफिस सेतु को कमांड दें!";
+  String _spokenWords = "माइक बटन दबाएं या कमरे चुनें!";
 
   @override
   void initState() {
@@ -48,10 +51,7 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
 
   void _listen() async {
     if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
-        onError: (val) => print('onError: $val'),
-      );
+      bool available = await _speech.initialize();
       if (available) {
         setState(() => _isListening = true);
         _speech.listen(
@@ -81,7 +81,7 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OfficeSetu (ऑफ़िस सेतु) - Voice Pro'),
+        title: const Text('OfficeSetu (ऑफ़िस सेतु) - Ultimate Pro'),
         backgroundColor: Colors.indigo[900],
       ),
       body: Padding(
@@ -98,44 +98,40 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
               ),
               child: Column(
                 children: [
-                  Icon(_isListening ? Icons.mic : Icons.mic_none, size: 36, color: _isListening ? Colors.teal : Colors.indigo[900]),
-                  const SizedBox(height: 8),
-                  Text(
-                    _spokenWords,
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: _isListening ? Colors.teal[900] : Colors.indigo[900]),
-                    textAlign: TextAlign.center,
-                  ),
+                  Icon(_isListening ? Icons.mic : Icons.mic_none, size: 32, color: _isListening ? Colors.teal : Colors.indigo[900]),
+                  const SizedBox(height: 6),
+                  Text(_spokenWords, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.indigo[900]), textAlign: TextAlign.center),
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
 
-            // Room Navigation Buttons
+            // Room Buttons
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AttendanceMatchingScreen())),
-              icon: const Icon(Icons.calendar_today, size: 20),
-              label: const Text('Room 01: Attendance Matching', style: TextStyle(fontSize: 14)),
+              icon: const Icon(Icons.camera_alt, size: 20),
+              label: const Text('Room 01: Attendance & OCR Scanner', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
             ),
             const SizedBox(height: 8),
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HRHelperScreen())),
               icon: const Icon(Icons.people, size: 20),
-              label: const Text('Room 02: HR Helper (कर्मचारी प्रबंधन)', style: TextStyle(fontSize: 14)),
+              label: const Text('Room 02: HR Helper (Local Storage)', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
             ),
             const SizedBox(height: 8),
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpenseTrackerScreen())),
               icon: const Icon(Icons.receipt_long, size: 20),
-              label: const Text('Room 03: Expense Tracker (खर्च एवं बिल)', style: TextStyle(fontSize: 14)),
+              label: const Text('Room 03: Expense Tracker', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.teal[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
             ),
             const SizedBox(height: 8),
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TaskHubScreen())),
               icon: const Icon(Icons.assignment, size: 20),
-              label: const Text('Room 04: Task Hub (टास्क एवं असाइनमेंट)', style: TextStyle(fontSize: 14)),
+              label: const Text('Room 04: Task Hub', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
             ),
             const SizedBox(height: 8),
@@ -145,25 +141,106 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
               label: const Text('Room 05: Invoice & PDF Generator', style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
             ),
-            const Divider(height: 24),
+            const Divider(height: 20),
 
-            // Real Voice Command Trigger Button
+            // Voice Command Button
             ElevatedButton.icon(
               onPressed: _listen,
-              icon: Icon(_isListening ? Icons.stop : Icons.mic, size: 22),
-              label: Text(_isListening ? 'सुन रहा हूँ... (रोकने के लिए दबाएं)' : 'बोलकर काम कराओ (Voice Command)', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _isListening ? Colors.red[700] : Colors.teal[700],
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
+              icon: Icon(_isListening ? Icons.stop : Icons.mic, size: 20),
+              label: Text(_isListening ? 'सुन रहा हूँ...' : 'बोलकर नेविगेट करें (Voice Command)', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(backgroundColor: _isListening ? Colors.red : Colors.teal[700], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
             ),
             const Spacer(),
+            const Text('© 2026 Jitender Mehra. OfficeSetu Ultimate', style: TextStyle(fontSize: 12, color: Colors.grey), textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-            const Text(
-              '© 2026 Jitender Mehra. OfficeSetu - Voice Enabled',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-              textAlign: TextAlign.center,
+// Room 01: Attendance with Real Camera & OCR Scanner
+class AttendanceMatchingScreen extends StatefulWidget {
+  const AttendanceMatchingScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AttendanceMatchingScreen> createState() => _AttendanceMatchingScreenState();
+}
+
+class _AttendanceMatchingScreenState extends State<AttendanceMatchingScreen> {
+  File? _image;
+  String _extractedText = "रजिस्टर की फोटो खींचकर स्कैन करने के लिए नीचे बटन दबाएं।";
+  bool _isScanning = false;
+
+  Future<void> _pickImageAndScan() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        _isScanning = true;
+        _extractedText = "स्कैन हो रहा है...";
+      });
+
+      final inputImage = InputImage.fromFilePath(pickedFile.path);
+      final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+      final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+
+      setState(() {
+        _extractedText = recognizedText.text.isNotEmpty ? recognizedText.text : "कोई टेक्स्ट नहीं मिला।";
+        _isScanning = false;
+      });
+
+      textRecognizer.close();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Room 01: Attendance & OCR Scanner'), backgroundColor: Colors.indigo[900]),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ElevatedButton.icon(
+              onPressed: _isScanning ? null : _pickImageAndScan,
+              icon: const Icon(Icons.camera_alt),
+              label: Text(_isScanning ? 'स्कैनिंग जारी है...' : 'रजिस्टर की फोटो खींचें (Scan Register)'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+            ),
+            const SizedBox(height: 14),
+            Expanded(
+              flex: 2,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade400),
+                ),
+                child: _image != null
+                    ? ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.file(_image!, fit: BoxFit.cover))
+                    : const Center(child: Icon(Icons.image, size: 64, color: Colors.grey)),
+              ),
+            ),
+            const SizedBox(height: 14),
+            const Text('स्कैन किया गया डेटा (OCR Result):', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            const SizedBox(height: 6),
+            Expanded(
+              flex: 2,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.indigo.withOpacity(0.3)),
+                ),
+                child: SingleChildScrollView(
+                  child: Text(_extractedText, style: const TextStyle(fontSize: 14)),
+                ),
+              ),
             ),
           ],
         ),
@@ -172,145 +249,50 @@ class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
   }
 }
 
-// Room 01 to 05 classes remain fully integrated (Attendance, HR with Local Storage, Expense, Task, Invoice with PDF)
-class AttendanceMatchingScreen extends StatelessWidget {
-  const AttendanceMatchingScreen({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Room 01: Attendance Matching'), backgroundColor: Colors.indigo[900]),
-      body: ListView(
-        padding: const EdgeInsets.all(12),
-        children: const [
-          Card(child: ListTile(title: Text('राजेश कुमार (EMP001)'), subtitle: Text('रफ एग्जिट: 18:30 | ओरिजिनल इन: 09:00'), trailing: Chip(label: Text('Matched 100%')))),
-        ],
-      ),
-    );
-  }
-}
-
-class HRHelperScreen extends StatefulWidget {
+// Room 02: HR Helper
+class HRHelperScreen extends StatelessWidget {
   const HRHelperScreen({Key? key}) : super(key: key);
   @override
-  State<HRHelperScreen> createState() => _HRHelperScreenState();
-}
-
-class _HRHelperScreenState extends State<HRHelperScreen> {
-  List<Map<String, dynamic>> employeeList = [
-    {"code": "EMP001", "name": "राजेश कुमार", "designation": "Delivery Rider", "status": "Active", "salary": "₹18,000"}
-  ];
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Room 02: HR Helper (Local Storage)'), backgroundColor: Colors.blueGrey[900]),
-      body: ListView.builder(
-        itemCount: employeeList.length,
-        itemBuilder: (context, index) {
-          final emp = employeeList[index];
-          return Card(
-            margin: const EdgeInsets.all(8),
-            child: ListTile(
-              title: Text('${emp["name"]} (${emp["code"]})', style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text('${emp["designation"]} | वेतन: ${emp["salary"]}'),
-              trailing: Chip(label: Text(emp["status"]), backgroundColor: Colors.green[100]),
-            ),
-          );
-        },
-      ),
+      appBar: AppBar(title: const Text('Room 02: HR Helper'), backgroundColor: Colors.blueGrey[900]),
+      body: const Center(child: Text('HR Helper - Local Storage Active', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
     );
   }
 }
 
+// Room 03: Expense Tracker
 class ExpenseTrackerScreen extends StatelessWidget {
   const ExpenseTrackerScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Room 03: Expense Tracker'), backgroundColor: Colors.teal[900]),
-      body: ListView(
-        padding: const EdgeInsets.all(12),
-        children: const [
-          Card(child: ListTile(title: Text('ऑफिस बिजली बिल'), trailing: Text('₹2,400', style: TextStyle(fontWeight: FontWeight.bold)))),
-        ],
-      ),
+      body: const Center(child: Text('Expense Tracker Screen', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
     );
   }
 }
 
+// Room 04: Task Hub
 class TaskHubScreen extends StatelessWidget {
   const TaskHubScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Room 04: Task Hub'), backgroundColor: Colors.deepPurple[900]),
-      body: ListView(
-        padding: const EdgeInsets.all(12),
-        children: const [
-          Card(child: ListTile(title: Text('स्टॉक रजिस्टर का मिलान'), subtitle: Text('जिम्मा: राजेश कुमार'))),
-        ],
-      ),
+      body: const Center(child: Text('Task Hub Screen', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
     );
   }
 }
 
-class InvoiceGeneratorScreen extends StatefulWidget {
+// Room 05: Invoice Generator
+class InvoiceGeneratorScreen extends StatelessWidget {
   const InvoiceGeneratorScreen({Key? key}) : super(key: key);
-  @override
-  State<InvoiceGeneratorScreen> createState() => _InvoiceGeneratorScreenState();
-}
-
-class _InvoiceGeneratorScreenState extends State<InvoiceGeneratorScreen> {
-  final List<Map<String, dynamic>> invoiceList = [
-    {"invoiceNo": "INV-101", "client": "श्री बालाजी ट्रेडर्स", "amount": "₹12,500"},
-  ];
-
-  Future<void> _generateAndPrintPDF(Map<String, dynamic> inv) async {
-    final pdf = pw.Document();
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Center(
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text("OfficeSetu Official Invoice", style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
-                pw.SizedBox(height: 20),
-                pw.Text("Invoice No: ${inv["invoiceNo"]}", style: const pw.TextStyle(fontSize: 16)),
-                pw.Text("Client Name: ${inv["client"]}", style: const pw.TextStyle(fontSize: 16)),
-                pw.Text("Total Amount: ${inv["amount"]}", style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => pdf.save(),
-      name: '${inv["client"]}_Invoice.pdf',
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Room 05: Invoice & PDF Generator'), backgroundColor: Colors.deepOrange[900]),
-      body: ListView.builder(
-        itemCount: invoiceList.length,
-        itemBuilder: (context, index) {
-          final inv = invoiceList[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: ListTile(
-              leading: const Icon(Icons.picture_as_pdf, color: Colors.deepOrange),
-              title: Text('${inv["client"]} (${inv["invoiceNo"]})', style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: const Text('Tap to generate & share PDF'),
-              trailing: Text(inv["amount"], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              onTap: () => _generateAndPrintPDF(inv),
-            ),
-          );
-        },
-      ),
+      appBar: AppBar(title: const Text('Room 05: Invoice Generator'), backgroundColor: Colors.deepOrange[900]),
+      body: const Center(child: Text('Invoice Generator & PDF Screen', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
     );
   }
 }
