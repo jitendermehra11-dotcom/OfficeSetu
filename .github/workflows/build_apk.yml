@@ -29,7 +29,7 @@ jobs:
           mkdir -p assets
           pip install Pillow
           
-          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना
+          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना (नाम पूरी तरह छोटे अक्षरों में)
           python3 -c "
           import yaml
           from PIL import Image, ImageDraw
