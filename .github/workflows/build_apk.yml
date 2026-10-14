@@ -24,16 +24,16 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Create PNG Icon and Fix Config
+      - name: Install Python Pillow and Create PNG Icon
         run: |
           mkdir -p assets
+          pip install Pillow
           
-          # पाइथन (Pillow) के जरिए सीधे एक प्रोफेशनल PNG लोगो तैयार करना
+          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना
           python3 -c "
           import yaml
           from PIL import Image, ImageDraw
 
-          # 512x512 की नीले रंग की कॉर्पोरेट आइकॉन इमेज बनाना
           img = Image.new('RGB', (512, 512), color='#1E3A8A')
           d = ImageDraw.Draw(img)
           d.rectangle([120, 120, 392, 392], outline='#FFFFFF', width=24)
