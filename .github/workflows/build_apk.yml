@@ -24,42 +24,41 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Create Default App Icon and Fix SDK Config
+      - name: Fix pubspec.yaml and Setup Icon
         run: |
           mkdir -p assets
           echo '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" rx="120" fill="#1E3A8A"/><text x="50%" y="54%" font-family="Arial, sans-serif" font-size="220" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">O</text></svg>' > assets/icon.svg
-          
-          # सुनिश्चित करें कि नाम और सही SDK कंस्ट्रेंट सेट हों
-          if ! grep -q "name:" pubspec.yaml; then
-            sed -i '1i name: officesetu' pubspec.yaml
-          fi
-          
-          # पुराने SDK कंस्ट्रेंट को आधुनिक नल-सेफ्टी वर्जन से बदलना
+
+          # पाइथन के जरिए pubspec.yaml को पूरी तरह से ठीक करना
           python3 -c "
+          import yaml
+
           with open('pubspec.yaml', 'r') as f:
-              content = f.read()
-          if 'sdk:' in content:
-              import re
-              content = re.sub(r'sdk:\s*[\"\x27]?.*[\"\x27]?', 'sdk: \">=3.0.0 <4.0.0\"', content)
-          else:
-              content += '\nenvironment:\n  sdk: \">=3.0.0 <4.0.0\"\n'
+              try:
+                  data = yaml.safe_load(f) or {}
+              except:
+                  data = {}
+
+          data['name'] = 'officesetu'
+          
+          if 'environment' not in data or not isinstance(data['environment'], dict):
+              data['environment'] = {}
+          data['environment']['sdk'] = '>=3.0.0 <4.0.0'
+
+          data['flutter_icons'] = {
+              'android': True,
+              'ios': True,
+              'image_path': 'assets/icon.svg'
+          }
+
           with open('pubspec.yaml', 'w') as f:
-              f.write(content)
+              yaml.safe_dump(data, f)
           "
 
-      - name: Install Icon Package and Dependencies
+      - name: Install Dependencies and Generate Icon
         run: |
           flutter pub add flutter_launcher_icons:^0.13.1
           flutter pub get
-
-      - name: Generate Custom Launcher Icon
-        run: |
-          if ! grep -q "flutter_icons:" pubspec.yaml; then
-            echo "flutter_icons:" >> pubspec.yaml
-            echo "  android: true" >> pubspec.yaml
-            echo "  ios: true" >> pubspec.yaml
-            echo "  image_path: \"assets/icon.svg\"" >> pubspec.yaml
-          fi
           flutter pub run flutter_launcher_icons:main
 
       - name: Build APK
