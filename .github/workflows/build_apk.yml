@@ -24,11 +24,15 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Create Default App Icon
+      - name: Create Default App Icon and Fix Config
         run: |
           mkdir -p assets
-          # एक सुंदर सा प्रोफेशनल लोगो जनरेट करने के लिए स्क्रिप्ट
           echo '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" rx="120" fill="#1E3A8A"/><text x="50%" y="54%" font-family="Arial, sans-serif" font-size="220" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">O</text></svg>' > assets/icon.svg
+          
+          # सुनिश्चित करें कि pubspec.yaml में नाम और एसडीके सही से मौजूद हों
+          if ! grep -q "name:" pubspec.yaml; then
+            sed -i '1i name: officesetu' pubspec.yaml
+          fi
 
       - name: Install Icon Package and Dependencies
         run: |
@@ -37,7 +41,6 @@ jobs:
 
       - name: Generate Custom Launcher Icon
         run: |
-          # pubspec.yaml में आइकॉन की सेटिंग जोड़ना
           echo "flutter_icons:" >> pubspec.yaml
           echo "  android: true" >> pubspec.yaml
           echo "  ios: true" >> pubspec.yaml
