@@ -24,12 +24,12 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install Python Pillow and Create PNG Icon
+      - name: Install Python Pillow and Fix Config
         run: |
           mkdir -p assets
           pip install Pillow
           
-          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना (केवल एंड्रॉइड के लिए)
+          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना
           python3 -c "
           import yaml
           from PIL import Image, ImageDraw
@@ -61,8 +61,9 @@ jobs:
               yaml.safe_dump(data, f)
           "
 
-      - name: Install Dependencies and Generate Icon
+      - name: Create Android Platform and Generate Icon
         run: |
+          flutter create . --platforms=android
           flutter pub add flutter_launcher_icons:^0.13.1
           flutter pub get
           flutter pub run flutter_launcher_icons:main
