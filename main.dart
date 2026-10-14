@@ -1,6 +1,5 @@
-// OfficeSetu - Main Entry Point (Modular & Clean)
+// lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'screens/room1_attendance.dart';
 import 'screens/room2_hr.dart';
 import 'screens/room3_expense.dart';
@@ -17,139 +16,189 @@ class OfficeSetuApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'OfficeSetu - Ultimate Pro',
+      title: 'OfficeSetu - Enterprise Edition',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.indigo,
-        scaffoldBackgroundColor: const Color(0xFFF4F6F9),
+        useMaterial3: true,
       ),
-      home: const OfficeSetuDashboard(),
-      debugShowCheckedModeBanner: false,
+      home: const DashboardScreen(),
     );
   }
 }
 
-class OfficeSetuDashboard extends StatefulWidget {
-  const OfficeSetuDashboard({Key? key}) : super(key: key);
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
-  State<OfficeSetuDashboard> createState() => _OfficeSetuDashboardState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _OfficeSetuDashboardState extends State<OfficeSetuDashboard> {
-  late stt.SpeechToText _speech;
-  bool _isListening = false;
-  String _spokenWords = "माइक बटन दबाएं या कमरे चुनें!";
+class _DashboardScreenState extends State<DashboardScreen> {
+  // टियर और ट्रायल स्टेटस (14-30 दिन का कॉर्पोरेट ट्रायल या एंटरप्राइज लाइसेंस)
+  int _dailyScansLeft = 5; // बेसिक फ्री टियर के लिए दैनिक लिमिट
+  String _currentTier = "Enterprise Full Power (400+ Employees)";
 
-  @override
-  void initState() {
-    super.initState();
-    _speech = stt.SpeechToText();
-  }
-
-  void _listen() async {
-    if (!_isListening) {
-      bool available = await _speech.initialize();
-      if (available) {
-        setState(() => _isListening = true);
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _spokenWords = val.recognizedWords;
-            String cmd = _spokenWords.toLowerCase();
-            if (cmd.contains('attendance') || cmd.contains('अटेंडेंस')) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const AttendanceMatchingScreen()));
-            } else if (cmd.contains('hr') || cmd.contains('स्टाफ')) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const HRHelperScreen()));
-            } else if (cmd.contains('expense') || cmd.contains('खर्च')) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpenseTrackerScreen()));
-            } else if (cmd.contains('task') || cmd.contains('टास्क')) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const TaskHubScreen()));
-            } else if (cmd.contains('invoice') || cmd.contains('इनवॉइस')) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const InvoiceGeneratorScreen()));
-            }
-          }),
-        );
-      }
-    } else {
-      setState(() => _isListening = false);
-      _speech.stop();
-    }
+  void _showSubscriptionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('OfficeSetu - लाइसेंस और सब्सक्रिप्शन'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('वर्तमान योजना: $_currentTier', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo)),
+            const SizedBox(height: 10),
+            const Text('1. बेसिक टियर: विज्ञापनों के साथ दैनिक 5 मुफ्त स्कैन।'),
+            const Text('2. स्टैंडर्ड टियर: छोटी टीमों के लिए मासिक प्लान।'),
+            const Text('3. एंटरप्राइज टियर: 400+ कर्मचारियों और फुल सिक्योरिटी वॉल्ट के साथ।'),
+            const SizedBox(height: 12),
+            const Text('अपने ऑफिस के सुचारू संचालन के लिए फुल वर्जन एक्टिवेट करें।', style: TextStyle(fontSize: 12, color: Colors.grey)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('बंद करें'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('सुरक्षित पेमेंट गेटवे और प्लान अपग्रेड विंडो जल्द खुलेगी!')),
+              );
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo[900], foregroundColor: Colors.white),
+            child: const Text('प्लान अपग्रेड करें'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OfficeSetu (ऑफ़िस सेतु) - Ultimate Pro'),
+        title: const Text('OfficeSetu - Master Dashboard'),
         backgroundColor: Colors.indigo[900],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.verified_user),
+            onPressed: _showSubscriptionDialog,
+            tooltip: 'सब्सक्रिप्शन और टियर स्थिति',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // स्वागत और टियर स्टेटस कार्ड
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: _isListening ? Colors.teal[50] : Colors.indigo[50],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _isListening ? Colors.teal : Colors.indigo.withOpacity(0.3)),
+                color: Colors.indigo[50],
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.indigo.withOpacity(0.3)),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(_isListening ? Icons.mic : Icons.mic_none, size: 32, color: _isListening ? Colors.teal : Colors.indigo[900]),
-                  const SizedBox(height: 6),
-                  Text(_spokenWords, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.indigo[900]), textAlign: TextAlign.center),
+                  const Text('स्वागत है, व्यवस्थापक (Admin)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.indigo)),
+                  const SizedBox(height: 4),
+                  Text('मोड: $_currentTier', style: const TextStyle(fontSize: 13, color: Colors.black87)),
+                  const SizedBox(height: 2),
+                  Text('बेसिक दैनिक स्कैन शेष: $_dailyScansLeft / 5', style: TextStyle(fontSize: 12, color: Colors.teal[800], fontWeight: FontWeight.w600)),
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
+            const Text(
+              'ऑफिस प्रबंधन कक्ष (Functional Rooms):',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.indigo),
+            ),
+            const SizedBox(height: 10),
 
-            // Room Buttons
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AttendanceMatchingScreen())),
-              icon: const Icon(Icons.verified, size: 20),
-              label: const Text('Room 01: Strict Attendance & OCR Matching', style: TextStyle(fontSize: 14)),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
+            // पांचों कमरों का ग्रिड नेविगेशन
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                children: [
+                  _buildRoomCard(
+                    context,
+                    'Room 01: Attendance',
+                    'ऑटो-क्लीन ओसीआर और मिलान',
+                    Icons.how_to_reg,
+                    Colors.indigo,
+                    const AttendanceMatchingScreen(),
+                  ),
+                  _buildRoomCard(
+                    context,
+                    'Room 02: HR Helper',
+                    'स्टाफ रिकॉर्ड और सिक्योर Vault',
+                    Icons.badge,
+                    Colors.blueGrey,
+                    const HRHelperScreen(),
+                  ),
+                  _buildRoomCard(
+                    context,
+                    'Room 03: Expense',
+                    'खर्च और लेजर बही-खाता',
+                    Icons.account_balance_wallet,
+                    Colors.teal,
+                    const ExpenseTrackerScreen(),
+                  ),
+                  _buildRoomCard(
+                    context,
+                    'Room 04: Task Hub',
+                    'टास्क और ड्यूटी मैनेजमेंट',
+                    Icons.task_alt,
+                    Colors.deepPurple,
+                    const TaskHubScreen(),
+                  ),
+                  _buildRoomCard(
+                    context,
+                    'Room 05: Invoice',
+                    'प्रोफेशनल PDF और बिलिंग',
+                    Icons.receipt_long,
+                    Colors.deepOrange,
+                    const InvoiceGeneratorScreen(),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HRHelperScreen())),
-              icon: const Icon(Icons.people, size: 20),
-              label: const Text('Room 02: HR Helper (Local Storage)', style: TextStyle(fontSize: 14)),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpenseTrackerScreen())),
-              icon: const Icon(Icons.receipt_long, size: 20),
-              label: const Text('Room 03: Expense Tracker', style: TextStyle(fontSize: 14)),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.teal[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TaskHubScreen())),
-              icon: const Icon(Icons.assignment, size: 20),
-              label: const Text('Room 04: Task Hub', style: TextStyle(fontSize: 14)),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const InvoiceGeneratorScreen())),
-              icon: const Icon(Icons.description, size: 20),
-              label: const Text('Room 05: Invoice & PDF Generator', style: TextStyle(fontSize: 14)),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange[800], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
-            ),
-            const Divider(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
 
-            // Voice Command Button
-            ElevatedButton.icon(
-              onPressed: _listen,
-              icon: Icon(_isListening ? Icons.stop : Icons.mic, size: 20),
-              label: Text(_isListening ? 'सुन रहा हूँ...' : 'बोलकर नेविगेट करें (Voice Command)', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-              style: ElevatedButton.styleFrom(backgroundColor: _isListening ? Colors.red : Colors.teal[700], foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 10)),
-            ),
-            const Spacer(),
-            const Text('© 2026 Jitender Mehra. OfficeSetu Ultimate', style: TextStyle(fontSize: 12, color: Colors.grey), textAlign: TextAlign.center),
+  Widget _buildRoomCard(BuildContext context, String title, String subtitle, IconData icon, MaterialColor color, Widget screen) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color[50],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.5), width: 1.5),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 36, color: color[800]),
+            const SizedBox(height: 8),
+            Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: color[900]), textAlign: TextAlign.center),
+            const SizedBox(height: 4),
+            Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.black54), textAlign: TextAlign.center),
           ],
         ),
       ),
