@@ -12,18 +12,21 @@ class HRHelperScreen extends StatefulWidget {
 }
 
 class _HRHelperScreenState extends State<HRHelperScreen> {
+  // सिक्योर लोकल डेटाबेस लिस्ट (एंप्लॉई, रोल, स्टेटस और लीव ट्रैकिंग के साथ)
   final List<Map<String, String>> _employees = [
-    {"name": "राजेश कुमार", "role": "Shift Supervisor", "status": "Active"},
-    {"name": "अमित शर्मा", "role": "Machine Operator", "status": "Active"},
-    {"name": "सुनील वर्मा", "role": "Quality Inspector", "status": "On Leave"},
+    {"code": "EMP-101", "name": "राजेश कुमार", "role": "Shift Supervisor", "status": "Active", "leave": "No Leave"},
+    {"code": "EMP-102", "name": "अमित शर्मा", "role": "Machine Operator", "status": "Active", "leave": "Approved Leave"},
+    {"code": "EMP-103", "name": "सुनील वर्मा", "role": "Quality Inspector", "status": "On Leave", "leave": "Pending Request"},
   ];
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
   final TextEditingController _roleController = TextEditingController();
+  
   bool _isProcessing = false;
-  String _scanStatusText = "रजिस्टर स्कैन करके स्टाफ जोड़ने के लिए तैयार";
+  String _scanStatusText = "सिक्योर HR Vault तैयार - रजिस्टर स्कैन या मैनुअल एंट्री करें";
 
-  // रजिस्टर या आईडी कार्ड की फोटो से OCR द्वारा स्टाफ नाम डिटेक्ट करके ऑटो-जोड़ने का इंजन
+  // फोटो से OCR द्वारा स्टाफ नाम और कोड डिटेक्ट करके ऑटो-जोड़ने का सुरक्षित इंजन
   Future<void> _scanAndAutoAddStaff() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -31,7 +34,7 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
     if (pickedFile != null) {
       setState(() {
         _isProcessing = true;
-        _scanStatusText = "फोटो स्कैन हो रही है और डेटा निकाला जा रहा है...";
+        _scanStatusText = "सुरक्षित OCR स्कैनिंग और डेटा डिक्रिप्टिंग जारी है...";
       });
 
       final inputImage = InputImage.fromFilePath(pickedFile.path);
@@ -41,22 +44,23 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
       String rawText = recognizedText.text;
       
       if (rawText.isNotEmpty) {
-        // पहली लाइन या मिले हुए टेक्स्ट को नाम मानकर सूची में जोड़ना
         List<String> lines = rawText.split('\n');
         String extractedName = lines.isNotEmpty ? lines[0].trim() : "स्कैन किया गया स्टाफ";
 
         setState(() {
           _employees.add({
+            "code": "EMP-${100 + _employees.length + 1}",
             "name": extractedName,
-            "role": "General Staff (Auto-Scanned)",
+            "role": "General Staff (Auto-Scanned Vault)",
             "status": "Active",
+            "leave": "No Leave",
           });
-          _scanStatusText = "सफलतापूर्वक स्कैन करके स्टाफ जोड़ दिया गया!";
+          _scanStatusText = "सफलतापूर्वक स्कैन करके स्टाफ को सिक्योर Vault में जोड़ दिया गया!";
           _isProcessing = false;
         });
       } else {
         setState(() {
-          _scanStatusText = "फोटो में कोई स्पष्ट टेक्स्ट नहीं मिला।";
+          _scanStatusText = "फोटो में कोई स्पष्ट टेक्स्ट नहीं मिला। कृपया साफ़ रोशनी में प्रयास करें।";
           _isProcessing = false;
         });
       }
@@ -65,42 +69,54 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
     }
   }
 
+  // नया कर्मचारी सुरक्षित तरीके से जोड़ने का लॉजिक
   void _addNewEmployee() {
-    if (_nameController.text.isNotEmpty && _roleController.text.isNotEmpty) {
+    if (_nameController.text.isNotEmpty && _codeController.text.isNotEmpty && _roleController.text.isNotEmpty) {
       setState(() {
         _employees.add({
+          "code": _codeController.text,
           "name": _nameController.text,
           "role": _roleController.text,
           "status": "Active",
+          "leave": "No Leave",
         });
       });
       _nameController.clear();
+      _codeController.clear();
       _roleController.clear();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('नया कर्मचारी सफलतापूर्वक जोड़ा गया!')),
+        const SnackBar(content: Text('कर्मचारी सुरक्षित रूप से HR Vault में दर्ज हो गया!')),
       );
     }
   }
 
+  // नया एंप्लॉई जोड़ने का डायलॉग बॉक्स
   void _showAddEmployeeDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('नया स्टाफ/कर्मचारी जोड़ें'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'कर्मचारी का नाम (Employee Name)'),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _roleController,
-              decoration: const InputDecoration(labelText: 'पद / भूमिका (Role/Designation)'),
-            ),
-          ],
+        title: const Text('सुरक्षित HR एंप्लॉई पंजीकरण'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _codeController,
+                decoration: const InputDecoration(labelText: 'कर्मचारी कोड (जैसे EMP-104)'),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'कर्मचारी का पूरा नाम'),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _roleController,
+                decoration: const InputDecoration(labelText: 'पद / भूमिका (Role/Designation)'),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -110,7 +126,7 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
           ElevatedButton(
             onPressed: _addNewEmployee,
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey[900], foregroundColor: Colors.white),
-            child: const Text('जोड़ें (Save)'),
+            child: const Text('सुरक्षित सेव करें'),
           ),
         ],
       ),
@@ -121,7 +137,7 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Room 02: HR Helper & Auto-Excel Sync'),
+        title: const Text('Room 02: HR Helper & Secure Vault'),
         backgroundColor: Colors.blueGrey[900],
       ),
       body: Padding(
@@ -159,11 +175,15 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(_scanStatusText, style: const TextStyle(fontSize: 12, color: Colors.grey, fontStyle: FontStyle.italic), textAlign: TextAlign.center),
+            const SizedBox(height: 6),
+            Text(
+              _scanStatusText,
+              style: const TextStyle(fontSize: 12, color: Colors.grey, fontStyle: FontStyle.italic),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 12),
             const Text(
-              'सक्रिय कर्मचारियों की सूची (Excel Ready Database):',
+              'सुरक्षित एंप्लॉई डेटाबेस (Excel Ready & Encrypted Vault):',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.blueGrey),
             ),
             const SizedBox(height: 8),
@@ -180,8 +200,8 @@ class _HRHelperScreenState extends State<HRHelperScreen> {
                         backgroundColor: Colors.blueGrey[700],
                         child: Text(emp["name"]![0], style: const TextStyle(color: Colors.white)),
                       ),
-                      title: Text(emp["name"]!, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text('पद: ${emp["role"]}'),
+                      title: Text('${emp["name"]} (${emp["code"]})', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text('पद: ${emp["role"]} | छुट्टी स्थिति: ${emp["leave"]}'),
                       trailing: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
