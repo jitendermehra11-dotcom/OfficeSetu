@@ -61,8 +61,12 @@ jobs:
               yaml.safe_dump(data, f)
           "
 
-      - name: Generate Icon and Get Dependencies
+      - name: Ensure Android Platform Exists and Generate Icon
         run: |
+          # यदि एंड्रॉइड फोल्डर नहीं है तभी बनाएं, इससे आपकी असली कोडिंग सुरक्षित रहेगी
+          if [ ! -d "android" ]; then
+            flutter create . --project-name officesetu --platforms=android
+          fi
           flutter pub add flutter_launcher_icons:^0.13.1
           flutter pub get
           flutter pub run flutter_launcher_icons:main
