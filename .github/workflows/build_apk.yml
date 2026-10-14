@@ -29,7 +29,7 @@ jobs:
           mkdir -p assets
           pip install Pillow
           
-          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना
+          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना (केवल एंड्रॉइड के लिए)
           python3 -c "
           import yaml
           from PIL import Image, ImageDraw
@@ -53,7 +53,7 @@ jobs:
 
           data['flutter_icons'] = {
               'android': True,
-              'ios': True,
+              'ios': False,
               'image_path': 'assets/icon.png'
           }
 
