@@ -1,4 +1,4 @@
-name: Build OfficeSetu APK
+name: Build officesetu APK
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
           mkdir -p assets
           pip install Pillow
           
-          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना (नाम पूरी तरह छोटे अक्षरों में)
+          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना
           python3 -c "
           import yaml
           from PIL import Image, ImageDraw
@@ -63,10 +63,24 @@ jobs:
 
       - name: Create Android Platform and Generate Icon
         run: |
-          flutter create . --platforms=android
+          flutter create . --project-name officesetu --platforms=android
           flutter pub add flutter_launcher_icons:^0.13.1
           flutter pub get
           flutter pub run flutter_launcher_icons:main
+
+      - name: Fix minSdkVersion to 21
+        run: |
+          # build.gradle फाइल में minSdkVersion को 19 से बढ़ाकर 21 करना ताकि speech_to_text का एरर न आए
+          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
+          # यदि सीधे minSdkVersion लिखा हो तो उसे भी 21 करना
+          python3 -c "
+          path = 'android/app/build.gradle'
+          with open(path, 'r') as f:
+              content = f.read()
+          content = content.replace('minSdkVersion 16', 'minSdkVersion 21').replace('minSdkVersion 19', 'minSdkVersion 21')
+          with open(path, 'w') as f:
+              f.write(content)
+          "
 
       - name: Build APK
         run: flutter build apk --release
