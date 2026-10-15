@@ -1,4 +1,4 @@
-name: Build OfficeSetu APK
+name: Build officesetu APK
 
 on:
   push:
@@ -24,52 +24,9 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install Python Pillow and Fix Config
+      - name: Install Dependencies
         run: |
-          mkdir -p assets
-          pip install Pillow
-          
-          # पाइथन के जरिए PNG आइकॉन और pubspec.yaml फिक्स करना
-          python3 -c "
-          import yaml
-          from PIL import Image, ImageDraw
-
-          img = Image.new('RGB', (512, 512), color='#1E3A8A')
-          d = ImageDraw.Draw(img)
-          d.rectangle([120, 120, 392, 392], outline='#FFFFFF', width=24)
-          img.save('assets/icon.png')
-
-          with open('pubspec.yaml', 'r') as f:
-              try:
-                  data = yaml.safe_load(f) or {}
-              except:
-                  data = {}
-
-          data['name'] = 'officesetu'
-          
-          if 'environment' not in data or not isinstance(data['environment'], dict):
-              data['environment'] = {}
-          data['environment']['sdk'] = '>=3.0.0 <4.0.0'
-
-          data['flutter_icons'] = {
-              'android': True,
-              'ios': False,
-              'image_path': 'assets/icon.png'
-          }
-
-          with open('pubspec.yaml', 'w') as f:
-              yaml.safe_dump(data, f)
-          "
-
-      - name: Ensure Android Platform Exists and Generate Icon
-        run: |
-          # यदि एंड्रॉइड फोल्डर नहीं है तभी बनाएं, इससे आपकी असली कोडिंग सुरक्षित रहेगी
-          if [ ! -d "android" ]; then
-            flutter create . --project-name officesetu --platforms=android
-          fi
-          flutter pub add flutter_launcher_icons:^0.13.1
           flutter pub get
-          flutter pub run flutter_launcher_icons:main
 
       - name: Fix minSdkVersion to 21
         run: |
@@ -88,5 +45,5 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OfficeSetu-Release-APK
+          name: officesetu-Release-APK
           path: build/app/outputs/flutter-apk/app-release.apk
