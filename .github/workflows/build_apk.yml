@@ -24,8 +24,9 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install Dependencies
+      - name: Create Android Platform & Install Dependencies
         run: |
+          flutter create . --platforms=android
           flutter pub get
 
       - name: Fix minSdkVersion to 21
@@ -45,5 +46,5 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: officesetu-Release-APK
+          name: OfficeSetu-Release-APK
           path: build/app/outputs/flutter-apk/app-release.apk
