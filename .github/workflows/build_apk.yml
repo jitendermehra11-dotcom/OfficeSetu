@@ -46,5 +46,5 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OfficeSetu-Release-APK
+          name: officesetu-Release-APK
           path: build/app/outputs/flutter-apk/app-release.apk
