@@ -202,7 +202,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-// Refresh build 2026
+    );            
