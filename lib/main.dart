@@ -35,9 +35,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  // टियर और ट्रायल स्टेटस (14-30 दिन का कॉर्पोरेट ट्रायल या एंटरप्राइज लाइसेंस)
-  int _dailyScansLeft = 5; // बेसिक फ्री टियर के लिए दैनिक लिमिट
-  String _currentTier = "Enterprise Full Power (400+ Employees)";
+  final int _dailyScansLeft = 5;
+  final String _currentTier = "Enterprise Full Power (400+ Employees)";
 
   void _showSubscriptionDialog() {
     showDialog(
@@ -96,7 +95,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // स्वागत और टियर स्टेटस कार्ड
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -121,8 +119,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.indigo),
             ),
             const SizedBox(height: 10),
-
-            // पांचों कमरों का ग्रिड नेविगेशन
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -202,7 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-    );   
+    );
+  }
+}
 
-
-    
