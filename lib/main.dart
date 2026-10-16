@@ -202,3 +202,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
+Update main.dart with clean structure)
