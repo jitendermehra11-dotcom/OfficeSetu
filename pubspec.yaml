@@ -1,5 +1,5 @@
 name: officesetu
-description: "OfficeSetu - Secure Office Automation App"
+description: "officesetu - Secure Office Automation App"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -23,3 +23,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+
+  
